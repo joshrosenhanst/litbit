@@ -15,7 +15,8 @@ def get_haiku(book):
 	seven_syllables = []
 
 	for line in book:
-		clean_line = line.strip().rstrip(',').capitalize()
+		clean_line = line.strip().rstrip(',')
+		clean_line = clean_line[:1].upper() + clean_line[1:]
 		if not clean_line.startswith('“'):
 			clean_line = clean_line.rstrip('”')
 
@@ -35,8 +36,8 @@ def get_haiku(book):
 
 @app.route("/")
 def layout():
-	title = "Moby Dick"
-	haiku = read_book("moby.txt")
+	title = "The Adventures of Tom Sawyer"
+	haiku = read_book("The Adventures of Tom Sawyer.txt")
 	line1 = unicode(haiku[0], 'utf-8')
 	line2 = unicode(haiku[1], 'utf-8')
 	line3 = unicode(haiku[2], 'utf-8')
