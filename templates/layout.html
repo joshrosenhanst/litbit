@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-<title>{{ title }}</title>
+<title>Recycled Poetry</title>
 <link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400i|Slabo+27px" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haiku.css') }}">
 </head>
@@ -12,6 +12,12 @@
   	<div class="line">{{ line1 }}</div>
   	<div class="line">{{ line2 }}</div>
   	<div class="line">{{ line3 }}</div>
+  </section>
+  <section class="refresh">
+  	<form action="" method="POST">
+  		<input type="hidden" name="book" value="{{ title }}">
+  		<input type="submit" value="New Poem" id="refreshButton">
+  	</form>
   </section>
   <hr>
   <section>
