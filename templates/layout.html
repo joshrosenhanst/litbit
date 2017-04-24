@@ -1,10 +1,33 @@
 <!doctype html>
-<title>{{ title }} Haiku</title>
+<html>
+<head>
+<title>{{ title }}</title>
+<link href="https://fonts.googleapis.com/css?family=PT+Serif:400,400i|Slabo+27px" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='haiku.css') }}">
+</head>
+<body>
 <main id="page">
-  <h1>{{ title }} - Haiku</h1>
-  <p>
-  	<span>{{ line1 }}</span><br>
-  	<span>{{ line2 }}</span><br>
-  	<span>{{ line3 }}</span>
-  </p>
+  <h1 class="title">{{ title }}</h1>
+  <section class="haiku">
+  	<div class="line">{{ line1 }}</div>
+  	<div class="line">{{ line2 }}</div>
+  	<div class="line">{{ line3 }}</div>
+  </section>
+  <hr>
+  <section>
+	  <h2 class="other">Other Books</h2>
+	  <form action="" method="POST">
+		  <select name="book" onchange="this.form.submit()">
+	  		{% for book in books %}
+	  			{% if book == title %}
+  				<option value="{{ book }}" selected="selected">{{ book }}</option>
+	  			{% else %}
+  				<option value="{{ book }}">{{ book }}</option>
+	  			{% endif %}
+	  		{% endfor %}
+		  </select>
+	  </form>
+  </section>
 </main>
+</body>
+</html>
