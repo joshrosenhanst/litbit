@@ -38,6 +38,9 @@ def get_haiku(book):
 		if not clean_line.startswith('‘'):
 			clean_line = clean_line.rstrip('’')
 
+		if not clean_line.startswith("'"):
+			clean_line = clean_line.rstrip("'")
+
 		if len(clean_line):
 			syl_count = countsyl.count_syllables(clean_line)
 
