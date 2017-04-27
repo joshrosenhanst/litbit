@@ -23,8 +23,10 @@ def get_haiku(book):
 	print "get haiku"
 	five_syllables = []
 	seven_syllables = []
+	grab_bag = []
 
 	for line in book:
+		syllable = random.randint(1,10)
 		clean_line = line.strip().rstrip(',')
 		clean_line = clean_line[:1].upper() + clean_line[1:]
 		if not clean_line.startswith('"'):
@@ -38,6 +40,9 @@ def get_haiku(book):
 
 		if len(clean_line):
 			syl_count = countsyl.count_syllables(clean_line)
+
+			#if syl_count[0] >= 4 and syl_count[0] <= 7:
+			#	grab_bag.append(clean_line)
 			if syl_count[0] == 5 and syl_count[1] in [5,6]:
 				five_syllables.append(clean_line)
 
@@ -48,6 +53,11 @@ def get_haiku(book):
 		return [random.choice(five_syllables), random.choice(seven_syllables), random.choice(five_syllables)]
 	else:
 		return False
+
+	#if len(grab_bag) > 2:
+	#	return [random.choice(grab_bag), random.choice(grab_bag), random.choice(grab_bag)]
+	#else:
+	#	return False
 
 
 @app.route("/", methods=['GET', 'POST'])
