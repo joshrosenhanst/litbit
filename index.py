@@ -27,6 +27,9 @@ def get_haiku(book):
 	for line in book:
 		clean_line = line.strip().rstrip(',')
 		clean_line = clean_line[:1].upper() + clean_line[1:]
+		if not clean_line.startswith('"'):
+			clean_line = clean_line.rstrip('"')
+
 		if not clean_line.startswith('“'):
 			clean_line = clean_line.rstrip('”')
 
