@@ -6,14 +6,17 @@ import os
 import countsyl
 app = Flask(__name__)
 
-def get_books():
-	book_list = []
-	books = os.listdir("books")
-	for book in books:
-		book = unicode(book.replace(".txt", ""), 'utf-8')
-		book_list.append(book)
+#def get_books():
+#	book_list = []
+	#books = os.listdir("books")
+#	books = json.load("books.json")
+	#for book in books:
+	#	book = unicode(book.replace(".txt", ""), 'utf-8')
+	#	book_list.append(book)
+#	for book in books:
+#		book_list.append(book.author)
 
-	return book_list
+#	return book_list
 
 def read_book(filename):
 	f = open("books/"+filename, "r")
@@ -65,7 +68,10 @@ def get_haiku(book):
 
 @app.route("/", methods=['GET', 'POST'])
 def layout():
-	books = get_books()
+	#books = get_books()
+	#books = json.load("books/books.json")
+	with app.open_resource('books/books.json') as f:
+		books = json.load(f)
 	if request.method == 'POST':
 		title = request.form["book"]
 	else:
@@ -75,7 +81,7 @@ def layout():
 	line1 = unicode(haiku[0], 'utf-8')
 	line2 = unicode(haiku[1], 'utf-8')
 	line3 = unicode(haiku[2], 'utf-8')
-	return render_template('layout.html', title=title,line1=line1,line2=line2,line3=line3,books=books)
+	return render_template('layout.html', title=title,line1=line1,line2=line2,line3=line3,books=books["books"])
 
 if __name__ == "__main__":
 	app.run()

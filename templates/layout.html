@@ -45,10 +45,10 @@
 	  <form action="" method="POST">
 		  <select name="book" onchange="this.form.submit()">
 	  		{% for book in books %}
-	  			{% if book == title %}
-  				<option value="{{ book }}" selected="selected">{{ book }}</option>
+	  			{% if book.title == title %}
+  				<option value="{{ book.title }}" selected="selected">{{ book.title }} by  {{ book.author }}</option>
 	  			{% else %}
-  				<option value="{{ book }}">{{ book }}</option>
+  				<option value="{{ book.title }}">{{ book.title }} by {{ book.author }}</option>
 	  			{% endif %}
 	  		{% endfor %}
 		  </select>
