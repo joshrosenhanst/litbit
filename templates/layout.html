@@ -27,33 +27,7 @@
 </head>
 <body>
 <main id="page">
-  <h1 class="title">{{ title }}</h1>
-  <section class="haiku">
-  	<div class="line">{{ line1 }}</div>
-  	<div class="line">{{ line2 }}</div>
-  	<div class="line">{{ line3 }}</div>
-  </section>
-  <section class="refresh">
-  	<form action="" method="POST">
-  		<input type="hidden" name="book" value="{{ title }}">
-  		<input type="submit" value="New Poem" id="refreshButton">
-  	</form>
-  </section>
-  <hr>
-  <section>
-	  <h2 class="other">Other Books</h2>
-	  <form action="" method="POST">
-		  <select name="book" onchange="this.form.submit()">
-	  		{% for book in books %}
-	  			{% if book.title == title %}
-  				<option value="{{ book.title }}" selected="selected">{{ book.title }} by  {{ book.author }}</option>
-	  			{% else %}
-  				<option value="{{ book.title }}">{{ book.title }} by {{ book.author }}</option>
-	  			{% endif %}
-	  		{% endfor %}
-		  </select>
-	  </form>
-  </section>
+  {% block body %}{% endblock %}
 </main>
 </body>
 </html>
