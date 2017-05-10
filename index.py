@@ -48,6 +48,7 @@ def generate_poem(title,books):
 	poem = []
 	filename = get_filename(title, books)
 	if filename:
+		f = open("books/"+filename, "r")
 		
 	else:
 		return False
