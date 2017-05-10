@@ -4,6 +4,7 @@ from flask import Flask, render_template, url_for, request, json
 import random
 import os
 import countsyl
+import click
 app = Flask(__name__)
 
 #def get_books():
@@ -17,6 +18,32 @@ app = Flask(__name__)
 #		book_list.append(book.author)
 
 #	return book_list
+
+@app.cli.command('register')
+@click.option('--file', prompt=True)
+@click.option('--title', prompt=True)
+@click.option('--author', prompt=True)
+@click.option('--year', prompt=True)
+@click.option('--image', prompt=True)
+def register_book(file,title,author,year,image):
+	#read the file provided, create a json file, update the books.json meta file
+	new_book = dict()
+	with app.open_resource('books/books.json') as f:
+		books = json.load(f)
+
+	new_id = books["books"][-1]["id"] + 1
+	new_book["id"] = new_id
+	new_book["title"] = title
+	new_book["file"] = file
+	new_book["author"] = author
+	new_book["image"] = image
+	new_book["year"] = year
+
+	books["books"].append(new_book)
+	with open('books/books.json', 'w') as f:
+		json.dump(books,f)
+	output = (title, new_id)
+	click.echo("%s Registered\nID: %d" % output)
 
 def get_books():
 	with app.open_resource('books/books.json') as f:
