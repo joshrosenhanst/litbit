@@ -31,6 +31,8 @@ def register_book(file,title,author,year,image):
 	with app.open_resource('books/books.json') as f:
 		books = json.load(f)
 
+	book = get_book_details(file)
+
 	new_id = books["books"][-1]["id"] + 1
 	new_book["id"] = new_id
 	new_book["title"] = title
@@ -61,6 +63,23 @@ def get_filename(title,books):
 def read_book(filename):
 	f = open("books/"+filename, "r")
 	return get_haiku(f)
+
+def get_book_details(filename):
+	with open('books/'+filename, 'r') as f:
+		book = dict()
+		for line in f:
+			line = line.strip()
+			line = line[:1].upper() + line[1:]	
+			if len(line):
+				syl_count = countsyl.count_syllables(line)
+				#book[syl_count[0]].append(line)
+				book.setdefault(syl_count[0],[]).append(line)
+		
+		with open('books/'+filename+'.json', 'w+') as f:
+			json.dump(book,f)
+
+	return book
+
 
 def get_poem_code(code_list):
 	code = code_list[0]+"|"+code_list[1]+"|"+code_list[2]
