@@ -1,0 +1,11 @@
+<section class="book_list">
+  {% for book in books %}
+    <div class="book_cover">
+      <a href="{{ url_for('get_poem', book=book.title) }}">
+        <img src="{{ url_for('static', filename='covers/'+book.image) }}" alt="{{ book.title }}">
+        <span class="book_title">{{ book.title }}</span>
+        <span class="book_author">{{ book.author }}</span>
+      </a>
+    </div>
+  {% endfor %}
+</section>
