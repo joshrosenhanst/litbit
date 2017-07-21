@@ -9,7 +9,7 @@ home = %(base)/litbit
 pythonpath = %(base)
 
 #socket file's location
-socket = /path/to/folder/litbit/%n.sock
+socket = %(base)/%n.sock
 
 #permissions for the socket file
 chmod-socket    = 666
@@ -18,5 +18,5 @@ chmod-socket    = 666
 callable = app
 
 #location of log files
-logto = /path/to/folder/litbit/log/%n.log
+logto = %(base)/log/%n.log
 py-autoreload = 3
