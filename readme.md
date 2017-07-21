@@ -1,5 +1,4 @@
-# Lit Bit
-### Auto Generated Poems
+# Lit Bit - Auto Generated Poems
 LitBit generates a small poem from lines popular literature.
 
 ### Tech

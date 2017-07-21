@@ -13,6 +13,16 @@ main{
 	margin:0 auto;
 	padding:20px;
 }
+footer{
+    border-top:1px solid #dddddd;
+    text-align:center;
+    padding-top:20px;
+    margin-top:40px;
+}
+footer a{
+    text-decoration:none;
+    color:#555555;
+}
 
 h1.title, h2.other{
 	font-family: 'Slabo 27px', serif;
@@ -33,7 +43,8 @@ h2.other{
 
 .main_presentation{
     overflow:hidden;
-    margin-bottom:40px;
+    border-bottom:1px solid #dddddd;
+    padding-bottom:20px;
 }
 
 .main_presentation>p{
