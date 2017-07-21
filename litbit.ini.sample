@@ -1,0 +1,22 @@
+[uwsgi]
+base = /path/to/folder
+
+#python module to import
+app = index #name of main python file
+module = %(app)
+
+home = %(base)/litbit
+pythonpath = %(base)
+
+#socket file's location
+socket = /path/to/folder/litbit/%n.sock
+
+#permissions for the socket file
+chmod-socket    = 666
+
+#the variable that holds a flask application inside the module imported at line #6
+callable = app
+
+#location of log files
+logto = /path/to/folder/litbit/log/%n.log
+py-autoreload = 3
