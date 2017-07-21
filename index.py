@@ -1,23 +1,86 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, url_for, request, json
+from flask import Flask, render_template, url_for, request, json, g, redirect, request, abort
+from hashids import Hashids
 import random
 import os
 import countsyl
 import click
+from pprint import pprint
 app = Flask(__name__)
+hashids = Hashids()
 
-#def get_books():
-#	book_list = []
-	#books = os.listdir("books")
-#	books = json.load("books.json")
-	#for book in books:
-	#	book = unicode(book.replace(".txt", ""), 'utf-8')
-	#	book_list.append(book)
-#	for book in books:
-#		book_list.append(book.author)
+SYL_1="5"
+SYL_2="8"
+SYL_3="5"
+BOOK_META="books/books.json"
 
-#	return book_list
+with app.open_resource(BOOK_META) as f:
+	books = json.load(f)
+
+@app.before_request
+def before_request():
+	g.books = books
+
+@app.route("/")
+def index():
+	return render_template('index.html', books=g.books["books"])
+
+@app.route("/<id>")
+def get_poem(id):
+	book = get_book_by_id(int(id))
+	if book:
+		return generate_poem(book[0])
+	else:
+		return "Book not found"
+
+@app.route("/<id>/<code>")
+def display_poem(id, code):
+	book = get_book_by_id(int(id))
+	poem = read_poem_code(book[0],code)
+	return render_template('display_poem.html', poem=poem, book=book[0], books=g.books["books"])
+
+def get_book_by_id(id):
+	book = [book for book in g.books["books"] if book["id"] == id]
+	return book
+
+def generate_poem(book):
+	fname = 'books/'+book["file"]+'.json'
+	if os.path.isfile(fname):
+		with open(fname, 'r') as f:
+			b = json.load(f)
+			code_list =	[
+				random.randrange(0,len(b[SYL_1])), 
+				random.randrange(0,len(b[SYL_2])), 
+				random.randrange(0,len(b[SYL_3]))
+				]
+			#code = "_".join(map(str,code_list))
+			code = hashids.encode(code_list[0], code_list[1], code_list[2])
+			#encode
+			return redirect(url_for('display_poem', id=book["id"], code=code))
+	else:
+		abort(404)
+
+def read_poem_code(book, code):
+	#decode
+	#code_list = code.split("_")
+	code_list = hashids.decode(code)
+	code_list = map(int, code_list)
+	if book:
+		with open('books/'+book["file"]+'.json', 'r') as f:
+			b = json.load(f)
+			try:
+				poem = [
+					b[SYL_1][code_list[0]],
+					b[SYL_2][code_list[1]],
+					b[SYL_3][code_list[2]]
+				]
+			except IndexError:
+				abort(404)
+
+			return poem
+	else:
+		return "book not found"
 
 @app.cli.command('register')
 @click.option('--file', prompt=True)
@@ -28,12 +91,16 @@ app = Flask(__name__)
 def register_book(file,title,author,year,image):
 	#read the file provided, create a json file, update the books.json meta file
 	new_book = dict()
-	with app.open_resource('books/books.json') as f:
+
+	with app.open_resource(BOOK_META) as f:
 		books = json.load(f)
 
 	book = get_book_details(file)
 
-	new_id = books["books"][-1]["id"] + 1
+	if books["books"]:
+		new_id = books["books"][-1]["id"] + 1
+	else:
+		new_id = 1
 	new_book["id"] = new_id
 	new_book["title"] = title
 	new_book["file"] = file
@@ -47,29 +114,11 @@ def register_book(file,title,author,year,image):
 	output = (title, new_id)
 	click.echo("%s Registered\nID: %d" % output)
 
-def get_books():
-	with app.open_resource('books/books.json') as f:
-		books = json.load(f)
-
-	return books
-
-def get_filename(title,books):
-	for b in books:
-		if b.title == title:
-			return "books/"+b.file+".json"
-
-	return False
-
-def read_book(filename):
-	f = open("books/"+filename, "r")
-	return get_haiku(f)
-
 def get_book_details(filename):
 	with open('books/'+filename, 'r') as f:
 		book = dict()
 		for line in f:
-			line = line.strip()
-			line = line[:1].upper() + line[1:]	
+			line = clean_line(line)
 			if len(line):
 				syl_count = countsyl.count_syllables(line)
 				#book[syl_count[0]].append(line)
@@ -80,115 +129,18 @@ def get_book_details(filename):
 
 	return book
 
+def clean_line(line):
+	bad_character_pairs = [
+		['"','"'],['“','”'],['‘','’'],["'","'"]
+	]
+	cleanline = line.strip().rstrip(',')
+	cleanline = cleanline[:1].upper() + cleanline[1:] #capitalize the first letter
+	for char_pair in bad_character_pairs:
+		if not cleanline.startswith(char_pair[0]):
+			cleanline = cleanline.rstrip(char_pair[1]) 
+			#remove the last character, if there is not a matching pair at the front
 
-def get_poem_code(code_list):
-	code = code_list[0]+"|"+code_list[1]+"|"+code_list[2]
-	#encrypt
-	return code
-
-def read_poem_code(title,code,books):
-	code_list = code.split("|")
-	filename = get_filename(title, books)
-	if filename:
-		with open('books/'+filename, 'r') as f:
-			poem = list()
-			poem[0] = f["1"][code_list[0]]
-			poem[1] = f["8"][code_list[1]]
-			poem[2] = f["3"][code_list[2]]
-			return poem
-	else:
-		return False
-
-def generate_poem(title,books):
-	filename = get_filename(title, books)
-	if filename:
-		with open('books/'+filename, 'r') as f:
-			code = get_poem_code(list( 
-				random.randrange(0,len(f["1"])), 
-				random.randrange(0,len(f["8"])), 
-				random.randrange(0,len(f["3"]))
-				))
-			return redirect(url_for('display_poem', book=title, code=code))
-	else:
-		return False
-
-def get_haiku(book):
-	print "get haiku"
-	five_syllables = []
-	seven_syllables = []
-	grab_bag = []
-
-	for line in book:
-		syllable = random.randint(1,10)
-		clean_line = line.strip().rstrip(',')
-		clean_line = clean_line[:1].upper() + clean_line[1:]
-		if not clean_line.startswith('"'):
-			clean_line = clean_line.rstrip('"')
-
-		if not clean_line.startswith('“'):
-			clean_line = clean_line.rstrip('”')
-
-		if not clean_line.startswith('‘'):
-			clean_line = clean_line.rstrip('’')
-
-		if not clean_line.startswith("'"):
-			clean_line = clean_line.rstrip("'")
-
-		if len(clean_line):
-			syl_count = countsyl.count_syllables(clean_line)
-
-			#if syl_count[0] >= 4 and syl_count[0] <= 7:
-			#	grab_bag.append(clean_line)
-			if syl_count[0] == 5 and syl_count[1] in [5,6]:
-				five_syllables.append(clean_line)
-
-			if syl_count[0] == 7 and syl_count[1] in [7,8]:
-				seven_syllables.append(clean_line)
-
-	if len(five_syllables) > 2 and len(seven_syllables) > 0:
-		return [random.choice(five_syllables), random.choice(seven_syllables), random.choice(five_syllables)]
-	else:
-		return False
-
-	#if len(grab_bag) > 2:
-	#	return [random.choice(grab_bag), random.choice(grab_bag), random.choice(grab_bag)]
-	#else:
-	#	return False
-
-@app.route("/")
-def index():
-	books = get_books()
-	#Show the user the home page where they can select a book
-	return render_template('index.html', books=books["books"])
-
-@app.route("/<book>")
-def get_poem(book):
-	books = get_books()
-	generate_poem(book,books)
-
-@app.route("/<book>/<code>")
-def display_poem(book, code):
-	books = get_books()
-	#Show a poem generated by the book and code provided
-	poem = read_poem_code(book,code,books)
-	return render_template('display_poem.html', poem=poem, books=books["books"])
-
-"""@app.route("/", methods=['GET', 'POST'])
-def layout():
-	#books = get_books()
-	#books = json.load("books/books.json")
-	with app.open_resource('books/books.json') as f:
-		books = json.load(f)
-	if request.method == 'POST':
-		title = request.form["book"]
-	else:
-		title = "Moby Dick"
-
-	haiku = read_book(title+".txt")
-	line1 = unicode(haiku[0], 'utf-8')
-	line2 = unicode(haiku[1], 'utf-8')
-	line3 = unicode(haiku[2], 'utf-8')
-	return render_template('layout.html', title=title,line1=line1,line2=line2,line3=line3,books=books["books"])"""
+	return cleanline
 
 if __name__ == "__main__":
-	app.run()
+	app.run(debug=True)

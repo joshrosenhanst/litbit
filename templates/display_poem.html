@@ -1,13 +1,22 @@
 {% extends "layout.html" %}
+{% block meta %}
+<title>{{ book.title }} | LitBit Auto Generated Poem</title>
+<meta property="og:image" content="{{ url_for('static', filename='covers/'+book.image) }}">
+<meta property="og:title" content="{{ book.title }} | LitBit Auto Generated Poem">
+<meta property="og:description" content="{{ poem[0] }}; {{ poem[1] }}; {{ poem[2] }}">
+{% endblock %}
 {% block body %}
+<div class="main_presentation">
+  <img src="{{ url_for('static', filename='covers/'+book.image) }}" alt="{{ book.title }}" class="book_image">
   <h1 class="title">{{ book.title }}</h1>
   <section class="poem">
-        <div class="poem_line">{{ poem[0] }}</div>
-        <div class="poem_line">{{ poem[1] }}</div>
-        <div class="poem_line">{{ poem[2] }}</div>
+    <div class="poem_line">{{ poem[0] }}</div>
+    <div class="poem_line">{{ poem[1] }}</div>
+    <div class="poem_line">{{ poem[2] }}</div>
   </section>
+</div>
   <section class="refresh">
-    <a href="{{ url_for('get_poem', book=book.title) }}" id="refreshButton">New Poem</a>
+    <a href="{{ url_for('get_poem',id=book.id) }}" id="refreshButton">New Poem</a>
   </section>
   <hr>
   <h2 class="other">Other Books</h2>
