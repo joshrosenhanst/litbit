@@ -12,5 +12,5 @@ _mailinglist
 .cache/
 .idea/
 log/
-haiku/
+litbit/
 *.ini
