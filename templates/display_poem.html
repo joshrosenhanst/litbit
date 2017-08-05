@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block meta %}
 <title>{{ book.title }} | LitBit Auto Generated Poem</title>
-<meta property="og:image" content="{{ url_for('static', filename='covers/'+book.image) }}">
+<meta property="og:image" content="{{ url_for('static', filename='covers/'+book.image, _external=True) }}">
 <meta property="og:title" content="{{ book.title }} | LitBit Auto Generated Poem">
 <meta property="og:description" content="{{ poem[0] }}; {{ poem[1] }}; {{ poem[2] }}">
 {% endblock %}
