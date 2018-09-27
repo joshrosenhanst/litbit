@@ -34,6 +34,7 @@ LitBit generates a small poem from lines popular literature.
 1. Copy `litbit.service.example` to `/etc/systemd/system/litbit.service` and edit paths
 1. `sudo systemctl enable litbit`
 1. `sudo service litbit restart` and `sudo service nginx restart`
+1. Check permissions (everything should be group:www-data and 755) and the litbit/env/bin folder to make sure depencendies (flask/uwsgi) are there
 1. Error logs can be found at:
   * `journal ctl -u litbit.service`
   * nginx error logs
