@@ -1,6 +1,5 @@
 [uwsgi]
 chdir = /path/to/projectfolder
-module = run:app
 home = /path/to/projectfolder/env
 
 logto = /path/to/projectfolder/log/app.log
