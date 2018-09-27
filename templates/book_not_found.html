@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block meta %}
+<title>Book not found - LitBit | Auto Generated Poems</title>
+{% endblock %}
+{% block body %}
+<div class="main_presentation">
+  <img src="{{ url_for('static', filename='book.png') }}" alt="LitBit Logo" class="book_image">
+  <h1 class="title front-title">LitBit | Auto Generated Poems</h1>
+  <p>LitBit generates a small poem from popular literature.</p>
+</div>
+<div id="page_not_found">
+    <h1>Book Not Found</h1>
+</div>
+    <h2 class="title other">Select a Book</h1>
+  {% include 'all_books.html' %}
+{% endblock %}

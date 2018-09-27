@@ -37,7 +37,7 @@ def get_poem(id):
 		if book:
 			return generate_poem(book[0])
 		else:
-			return "Book not found"
+			return render_template('book_not_found.html', books=g.books["books"])
 	else:
 		abort(404)
 
@@ -90,7 +90,7 @@ def read_poem_code(book, code):
 
 			return poem
 	else:
-		return "book not found"
+		return render_template('book_not_found.html', books=g.books["books"])
 
 @app.cli.command('register')
 @click.option('--file', prompt=True)
