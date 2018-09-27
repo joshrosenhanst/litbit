@@ -177,3 +177,11 @@ select{
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
 }
+
+#page_not_found {
+    text-align: center;
+	font-family: 'Slabo 27px', serif;
+}
+#page_not_found h2.title.other {
+	font-style: italic;
+}

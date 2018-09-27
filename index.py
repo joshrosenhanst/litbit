@@ -22,23 +22,33 @@ with app.open_resource(BOOK_META) as f:
 def before_request():
 	g.books = books
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html', books=g.books["books"]), 404
+
 @app.route("/")
 def index():
 	return render_template('index.html', books=g.books["books"])
 
 @app.route("/<id>")
 def get_poem(id):
-	book = get_book_by_id(int(id))
-	if book:
-		return generate_poem(book[0])
+	if id.isdigit():
+		book = get_book_by_id(int(id))
+		if book:
+			return generate_poem(book[0])
+		else:
+			return "Book not found"
 	else:
-		return "Book not found"
+		abort(404)
 
 @app.route("/<id>/<code>")
 def display_poem(id, code):
-	book = get_book_by_id(int(id))
-	poem = read_poem_code(book[0],code)
-	return render_template('display_poem.html', poem=poem, book=book[0], books=g.books["books"])
+	if id.isdigit():
+		book = get_book_by_id(int(id))
+		poem = read_poem_code(book[0],code)
+		return render_template('display_poem.html', poem=poem, book=book[0], books=g.books["books"])
+	else:
+		abort(404)
 
 def get_book_by_id(id):
 	book = [book for book in g.books["books"] if book["id"] == id]
