@@ -1,22 +1,15 @@
 [uwsgi]
-base = /path/to/folder
+chdir = /path/to/projectfolder
+module = run:app
+home = /path/to/projectfolder/env #the virtualenv folder
 
-#python module to import
-app = index #name of main python file
-module = %(app)
+logto = /path/to/projectfolder/log/app.log
 
-home = %(base)/litbit
-pythonpath = %(base)
+master = true
+processes = 5
 
-#socket file's location
-socket = %(base)/%n.sock
+socket = /path/to/projectfolder/app.sock
+chmod-socket = 660
+vacuum = true
 
-#permissions for the socket file
-chmod-socket    = 666
-
-#the variable that holds a flask application inside the module imported at line #6
-callable = app
-
-#location of log files
-logto = %(base)/log/%n.log
-py-autoreload = 3
+die-on-term = true
