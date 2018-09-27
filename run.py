@@ -1,4 +1,4 @@
 from index import app
 
-if __name__ == "name"
+if __name__ == "__main__"
   app.run()
