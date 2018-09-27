@@ -92,13 +92,14 @@ def read_poem_code(book, code):
 	else:
 		return render_template('book_not_found.html', books=g.books)
 
-@app.cli.command('register')
+#register book command
+@app.cli.command()
 @click.option('--file', prompt=True)
 @click.option('--title', prompt=True)
 @click.option('--author', prompt=True)
 @click.option('--year', prompt=True)
 @click.option('--image', prompt=True)
-def register_book(file,title,author,year,image):
+def register(file,title,author,year,image):
 	#read the file provided, create a json file, update the books.json meta file
 	new_book = dict()
 
@@ -119,7 +120,7 @@ def register_book(file,title,author,year,image):
 	new_book["year"] = year
 
 	books["books"].append(new_book)
-	with open('books/books.json', 'w') as f:
+	with open(BOOK_META, 'w') as f:
 		json.dump(books,f)
 	output = (title, new_id)
 	click.echo("%s Registered\nID: %d" % output)
