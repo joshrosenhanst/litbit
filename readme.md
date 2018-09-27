@@ -45,8 +45,8 @@ LitBit generates a small poem from lines popular literature.
 * https://code.luasoftware.com/tutorials/nginx/setup-nginx-and-uwsgi-for-flask-on-ubuntu/
 
 ### Adding books
-1. Grab free use books from Project Gutenberg or similar source in .txt format. 
-1. Remove all unnecessary text from before or after the book text (ex: table of contents, prefaces, etc)
+1. Grab free use books from Project Gutenberg or similar source in plain .txt format. 
+1. Remove all unnecessary text from before or after the book text (ex: table of contents, prefaces, etc). We only want the actual book text.
 1. Add the .txt file to the books/ directory
 1. Grab a cover image, as well as title, author, and year details.
 1. Run the `flask register` command to add new books to the books.json list
