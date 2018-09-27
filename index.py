@@ -20,7 +20,7 @@ with app.open_resource(BOOK_META) as f:
 
 @app.before_request
 def before_request():
-	g.books = sorted(books["books"], key=lambda book: book["title"].lower)
+	g.books = sorted(books["books"], key=lambda book: book["title"])
 
 @app.errorhandler(404)
 def page_not_found(e):
