@@ -20,15 +20,15 @@ with app.open_resource(BOOK_META) as f:
 
 @app.before_request
 def before_request():
-	g.books = books
+	g.books = sorted(books["books"], key=lambda book: book["title"].lower)
 
 @app.errorhandler(404)
 def page_not_found(e):
-	return render_template('404.html', books=g.books["books"]), 404
+	return render_template('404.html', books=g.books), 404
 
 @app.route("/")
 def index():
-	return render_template('index.html', books=g.books["books"])
+	return render_template('index.html', books=g.books)
 
 @app.route("/<id>")
 def get_poem(id):
@@ -37,7 +37,7 @@ def get_poem(id):
 		if book:
 			return generate_poem(book[0])
 		else:
-			return render_template('book_not_found.html', books=g.books["books"])
+			return render_template('book_not_found.html', books=g.books)
 	else:
 		abort(404)
 
@@ -46,12 +46,12 @@ def display_poem(id, code):
 	if id.isdigit():
 		book = get_book_by_id(int(id))
 		poem = read_poem_code(book[0],code)
-		return render_template('display_poem.html', poem=poem, book=book[0], books=g.books["books"])
+		return render_template('display_poem.html', poem=poem, book=book[0], books=g.books)
 	else:
 		abort(404)
 
 def get_book_by_id(id):
-	book = [book for book in g.books["books"] if book["id"] == id]
+	book = [book for book in g.books if book["id"] == id]
 	return book
 
 def generate_poem(book):
@@ -90,7 +90,7 @@ def read_poem_code(book, code):
 
 			return poem
 	else:
-		return render_template('book_not_found.html', books=g.books["books"])
+		return render_template('book_not_found.html', books=g.books)
 
 @app.cli.command('register')
 @click.option('--file', prompt=True)
