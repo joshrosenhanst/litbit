@@ -1,6 +1,5 @@
 [uwsgi]
 chdir = /path/to/projectfolder
-module = run:app
 home = /path/to/projectfolder/env #the virtualenv folder
 
 logto = /path/to/projectfolder/log/app.log
@@ -13,3 +12,10 @@ chmod-socket = 660
 vacuum = true
 
 die-on-term = true
+
+# Dev server - served in root directory
+module = run:app
+
+# Prod server - served in /litbit/ directory
+#mount = /litbit=run:app
+#manage-script-name = true
