@@ -1,0 +1,12 @@
+[Unit]
+Description=uWSGI instance for litbit
+After=network.target
+
+[Service]
+Group=www-data
+WorkingDirectory=/var/www/litbit
+Environment="PATH=/var/www/litbit/env/bin"
+ExecStart=/var/www/litbit/env/bin/uwsgi --ini /var/www/litbit/litbit.ini
+
+[Install]
+WantedBy=multi-user.target
